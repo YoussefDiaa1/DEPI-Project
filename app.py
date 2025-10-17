@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import numpy as np
-import io  # for creating CSV in memory
 
-# Load model & preprocessor
+# ====== 1. Load model & preprocessor ======
 @st.cache_resource
 def load_model():
     preprocess = joblib.load("preprocess.pkl")
@@ -15,37 +13,56 @@ def load_model():
 
 preprocess, model, X_columns, X_stats = load_model()
 
-# App title
-st.title("🩺 Breast Cancer Prediction App")
-st.markdown(
-    "Enter the tumor measurements below and the system will predict whether "
-    "the case is **Malignant** or **Benign**."
-)
+# ====== 2. Streamlit App ======
+def main():
 
-# User input sliders
-st.subheader("📋 Input Tumor Features:")
-
-user_data = {}
-for col in X_columns:
-    stats = X_stats[col]
-    user_data[col] = st.slider(
-        f"{col}",
-        float(stats["min"]),
-        float(stats["max"]),
-        float(stats["mean"]),
-        format="%.5f"
+    # ====== Page Config ======
+    st.set_page_config(
+        page_title="Breast Cancer Prediction 🧬",
+        page_icon="🧬",
+        layout="centered",
+        initial_sidebar_state="expanded"
     )
 
-# Convert user input into DataFrame
-user_df = pd.DataFrame([user_data])[X_columns]
+    # ====== Title & Description ======
+    st.title("🧬 Breast Cancer Prediction App")
+    st.markdown("""
+    Welcome to the **Breast Cancer Prediction Tool**.  
+    This app uses an **SVM (with preprocessing pipeline)** trained on the **Breast Cancer Wisconsin dataset**  
+    to predict whether a tumor is **Benign** or **Malignant**.
 
-# Display entered data
-st.subheader("📊 Entered Data:")
-st.dataframe(user_df)
+    💡 Adjust values or use the default values to simulate predictions.
+    """)
 
-# Prediction
-if st.button("🔍 Predict"):
-    try:
+    st.markdown("---")  # horizontal line for separation
+
+    # ====== 3. Input Features in Columns ======
+    st.subheader("📋 Input Tumor Features:")
+    col1, col2, col3 = st.columns(3)
+
+    user_data = {}
+    cols = [col1, col2, col3]
+
+    # Loop through features and assign them to 3 columns evenly
+    for idx, col_name in enumerate(X_columns):
+        stats = X_stats[col_name]
+        current_col = cols[idx % 3]  # Distribute sliders evenly across 3 columns
+
+        with current_col:
+            user_data[col_name] = st.number_input(
+                f"{col_name}",
+                float(stats["min"]),
+                float(stats["max"]),
+                float(stats["mean"]),
+                format="%.5f"
+            )
+
+    # ====== 4. Create Input DataFrame ======
+    user_df = pd.DataFrame([user_data])[X_columns]
+
+    # ====== 6. Predict Button ======
+    if st.button("Predict"):
+
         # Apply preprocessing
         X_trans = preprocess.transform(user_df)
 
@@ -53,29 +70,35 @@ if st.button("🔍 Predict"):
         pred = model.predict(X_trans)[0]
         prob = model.predict_proba(X_trans)[0]
 
-        # Display result
-        st.subheader("🔎 Prediction Result:")
+        st.subheader("🧠 Prediction Result")
         if pred == 1:
-            st.error(f"⚠️ Diagnosis: **Malignant**\n\nConfidence: {prob[1]*100:.2f}%")
+            st.error(f"🚨 **Malignant Tumor Detected!**")
+            st.info(f"Prediction Confidence: **{prob[1] * 100:.2f}%** malignant")
         else:
-            st.success(f"✅ Diagnosis: **Benign**\n\nConfidence: {prob[0]*100:.2f}%")
+            st.success(f"✅ **Benign Tumor Detected!**")
+            st.info(f"Prediction Confidence: **{prob[0] * 100:.2f}%** benign")
+            st.balloons()
 
-        # Add prediction and confidence to DataFrame
+        # ====== Save and Display Feature Summary ======
+        st.subheader("📊 Feature Summary")
+
+        # Add prediction result to user_df before saving
         user_df["Prediction"] = "Malignant" if pred == 1 else "Benign"
-        user_df["Confidence"] = f"{prob[pred]*100:.2f}%"
+        user_df["Confidence"] = f"{prob[pred] * 100:.2f}%"
 
-        # Create CSV in memory
-        csv_buffer = io.StringIO()
-        user_df.to_csv(csv_buffer, index=False)
-        csv_bytes = csv_buffer.getvalue().encode("utf-8")
+        # Initialize session state DataFrame if not exists
+        if "all_inputs" not in st.session_state:
+            st.session_state.all_inputs = pd.DataFrame(columns=user_df.columns)
 
-        # Download button for CSV file
-        st.download_button(
-            label="💾 Download as CSV",
-            data=csv_bytes,
-            file_name="user_input_prediction.csv",
-            mime="text/csv"
+        # Append new row to session state DataFrame
+        st.session_state.all_inputs = pd.concat(
+            [st.session_state.all_inputs, user_df], ignore_index=True
         )
 
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+        # Display stored data
+        st.dataframe(st.session_state.all_inputs.style.background_gradient(cmap='coolwarm'))
+
+
+# ====== 7. Run the App ======
+if __name__ == "__main__":
+    main()
