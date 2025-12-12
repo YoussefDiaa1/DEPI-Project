@@ -26,6 +26,8 @@ Python
 
 YOLOv11
 
+Kaggle (For Training) --> https://share.google/IefNjV0o5b3nIbiqF
+
 Ultralytics
 
 OpenCV
