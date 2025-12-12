@@ -1,4 +1,5 @@
 Real-Time Object Detection for Autonomous Vehicles
+
 🚗 Overview
 
 This project focuses on building a real-time object detection system for autonomous driving using YOLOv11.
@@ -7,7 +8,7 @@ The goal is to accurately detect vehicles, pedestrians, traffic signs, and other
 We trained our model using a large, diverse dataset containing over 1.8 million bounding boxes, combined from BDD100K and additional sources.
 All annotations and dataset preparation were managed through Roboflow.
 
- Project Objectives
+ 🎯Project Objectives
 
 Detect and classify road objects in real-time
 
@@ -19,7 +20,7 @@ Perform data preprocessing, EDA, augmentation, and annotation cleanup
 
 Evaluate performance using industry-standard metrics
 
- Technologies Used
+ 🧰Technologies Used
 
 Python
 
@@ -33,7 +34,7 @@ Roboflow
 
 CUDA (GPU Acceleration)
 
- Model Results
+ 📊Model Results
 
 Our YOLOv11 model achieved:
 
@@ -43,7 +44,7 @@ Our YOLOv11 model achieved:
 
 These metrics reflect strong performance in both object localization and multi-scale recognition.
 
- Team Members
+ 👥Team Members
 
 This project was completed as a group collaboration:
 
