@@ -65,3 +65,8 @@ Improve night-time and adverse weather performance
 Deploy on edge devices (NVIDIA Jetson, Raspberry Pi)
 
 Expand training data with rare edge-case scenarios
+
+🔗 Live Deployment (Streamlit App)
+
+👉 Try the real-time object detection demo here:
+https://vechiledetection-n7ju7pdqd4sdgbuq8t7ket.streamlit.app/
