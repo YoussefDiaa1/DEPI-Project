@@ -72,3 +72,23 @@ Expand training data with rare edge-case scenarios
 
 👉 Try the real-time object detection demo here:
 https://vechiledetection-n7ju7pdqd4sdgbuq8t7ket.streamlit.app/
+
+📽️ Project Presentation
+
+You can view the full project presentation here:
+
+🔗 Presentation Link: (https://gamma.app/docs/Real-Time-Object-Detection-for-Autonomous-Vehicles-DEPI-Round-3-al50y441z0kd0f4?mode=doc)
+
+📚 Final Data
+
+The model was trained on a final merged dataset created and prepared using Roboflow.
+This dataset includes all cleaned, normalized, and augmented labels used for training.
+ 🔗https://www.kaggle.com/datasets/samermagdy/vecchile-detection
+
+
+Roboflow – Custom Annotated Dataset
+
+A fully processed dataset containing all bounding box annotations and class labels prepared specifically for this project.
+🔗 Dataset Workspace: (https://app.roboflow.com/bdd100k-bs1dh/cleaned-0onjw/4)
+
+
